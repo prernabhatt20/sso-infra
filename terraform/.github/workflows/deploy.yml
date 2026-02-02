@@ -64,7 +64,7 @@ jobs:
         echo "IMAGE_URI=$ECR_URI:$IMAGE_TAG" >> $GITHUB_ENV
 
     # Register New Task Definition
--
+    
     - name: Register ECS Task Definition
       run: |
         cat > taskdef.json <<EOF
