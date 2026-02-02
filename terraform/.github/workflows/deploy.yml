@@ -1,0 +1,101 @@
+name: Terraform + ECS Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPO: my-app
+  ECS_CLUSTER: my-ecs-cluster
+  ECS_SERVICE: my-ecs-service
+  TASK_FAMILY: my-task
+  CONTAINER_NAME: my-container
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout source code
+
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Configure AWS credentials
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # Terraform setup
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: Terraform Init
+      working-directory: terraform
+      run: terraform init
+
+    - name: Terraform Apply
+      working-directory: terraform
+      run: terraform apply -auto-approve
+
+    # Login to Amazon ECR
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    # Build & Push Docker Image
+
+    - name: Build and Push Docker Image
+      run: |
+        IMAGE_TAG=${GITHUB_SHA::7}
+        ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}
+
+        docker build -t $ECR_REPO:$IMAGE_TAG app/
+        docker tag $ECR_REPO:$IMAGE_TAG $ECR_URI:$IMAGE_TAG
+        docker push $ECR_URI:$IMAGE_TAG
+
+        echo "IMAGE_URI=$ECR_URI:$IMAGE_TAG" >> $GITHUB_ENV
+
+    # Register New Task Definition
+-
+    - name: Register ECS Task Definition
+      run: |
+        cat > taskdef.json <<EOF
+        {
+          "family": "${TASK_FAMILY}",
+          "networkMode": "awsvpc",
+          "requiresCompatibilities": ["FARGATE"],
+          "cpu": "256",
+          "memory": "512",
+          "executionRoleArn": "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ecsTaskExecutionRole",
+          "containerDefinitions": [
+            {
+              "name": "${CONTAINER_NAME}",
+              "image": "${IMAGE_URI}",
+              "essential": true,
+              "portMappings": [
+                { "containerPort": 80 }
+              ]
+            }
+          ]
+        }
+        EOF
+
+        aws ecs register-task-definition \
+          --cli-input-json file://taskdef.json
+
+    # Deploy ECS Service
+
+    - name: Update ECS Service
+      run: |
+        aws ecs update-service \
+          --cluster ${ECS_CLUSTER} \
+          --service ${ECS_SERVICE} \
+          --force-new-deployment
