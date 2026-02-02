@@ -4,7 +4,7 @@ data "aws_vpc" "vpc" {
 
 data "aws_subnets" "subnet" {
   filter {
-    name   = "vpc-id"
+    name   = var.vpc_id
     values = [data.aws_vpc.default.id]
   }
 }
@@ -36,7 +36,7 @@ resource "aws_ecs_service" "ecs-service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets         = data.aws_subnets.default.ids
+    subnets         = var.subnet_ids
     security_groups = [aws_security_group.this.id]
     assign_public_ip = true
   }

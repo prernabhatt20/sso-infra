@@ -2,6 +2,17 @@ provider "aws" {
   region = var.aws_region
 }
 
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
 module "ecr" {
   source            = "./modules/ecr"
   repository_name   = "my-app"
@@ -29,4 +40,7 @@ module "ecs_service" {
   cluster_id            = module.ecs_cluster.cluster_id
   task_definition_arn   = module.task_definition.task_definition_arn
   container_port        = 80
+
+  vpc_id         = data.aws_vpc.default.id
+  subnet_ids     = data.aws_subnets.default.ids
 }
