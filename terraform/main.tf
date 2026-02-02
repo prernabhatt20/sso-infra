@@ -27,6 +27,6 @@ module "ecs_service" {
   source                = "./modules/ecs_service"
   service_name          = "my-ecs-service"
   cluster_id            = module.ecs_cluster.cluster_id
-  task_definition_arn   = module.task_definition.task_definition_arn
+  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   container_port        = 80
 }
