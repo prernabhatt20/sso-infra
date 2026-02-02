@@ -2,9 +2,6 @@ name: Terraform Destroy
 
 on:
   workflow_dispatch:  # Allows manual triggering from GitHub UI
-  push:
-    branches:
-      - main   # Optional: only trigger on push to main (can remove for manual control)
 
 jobs:
   terraform-destroy:
