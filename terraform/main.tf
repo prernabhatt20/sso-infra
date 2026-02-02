@@ -1,9 +1,3 @@
-data "aws_subnets" "default" {
-  filter {
-    name   = "vpc-id"
-  }
-}
-
 module "ecr" {
   source            = "./modules/ecr"
   repository_name   = "my-app"
