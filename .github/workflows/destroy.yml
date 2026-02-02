@@ -28,7 +28,9 @@ jobs:
           aws-region: us-east-1   # Change if needed
 
       - name: Terraform Init
+        working-directory: terraform
         run: terraform init
 
       - name: Terraform Destroy
+        working-directory: terraform
         run: terraform destroy -auto-approve
