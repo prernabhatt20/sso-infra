@@ -32,7 +32,6 @@ module "ecs_service" {
   cluster_id            = module.ecs_cluster.cluster_id
   task_definition_arn   = module.task_definition.task_definition_arn
   container_port        = 80
-
-  vpc_id         = data.aws_vpc.default.id
-  subnet_ids     = data.aws_subnets.default.ids
+  vpc_id     = var.vpc_id
+  subnet_ids = var.subnet_ids
 }
