@@ -13,10 +13,13 @@ terraform {
       version = "~> 5.0"
     }
   }
+  backend "s3" {
+    bucket = "aws-s3-bucket-github"  
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+    encrypt = true
+  }
+
 }
 
-# Optional: backend for state file (S3 recommended for CI/CD)
-terraform {
-  backend "s3" {
-  }
-}
+
