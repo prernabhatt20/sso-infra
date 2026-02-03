@@ -1,13 +1,13 @@
 module "ecr" {
   source            = "./modules/ecr"
 #  repository_name   = "my-app"
-  repository_name = local.config.ecr.repository_name
+  repository_name = module.config.config.ecr.repository_name
 }
 
 module "ecs_cluster" {
   source        = "./modules/ecs_cluster"
 #  cluster_name  = "my-ecs-cluster"
-  cluster_name = "${local.config.app_name}-${local.config.env}"
+  cluster_name = "${module.config.config.app_name}-${module.config.config.env}"
 }
 
 module "task_definition" {
@@ -24,34 +24,38 @@ module "task_definition" {
 module "ecs_service" {
   source = "./modules/ecs_service"
 
-  org_name            = local.config.org_name
-  app_name            = local.config.app_name
-  service_name        = local.config.service_name
-  env                 = local.env
+  org_name            = module.config.config.org_name
+  app_name            = module.config.config.app_name
+  service_name        = module.config.config.service_name
+  env                 = module.config.config.env
 
   cluster_id          = module.ecs_cluster.id
   task_definition_arn = module.ecs_task.task_definition_arn
 
-  subnet_ids          = local.config.network.private_subnets
+  subnet_ids          = module.config.config.network.private_subnets
   security_group_ids = [
     module.sg.ecs_sg_ids["ecs-service"]
   ]
 
-  desired_count       = local.config.ecs.desired_count
+  desired_count       = module.config.config.ecs.desired_count
   assign_public_ip    = false
 
-  default_tags        = local.default_tags
+  default_tags = {
+    org = module.config.config.org_name
+    app = module.config.config.app_name
+    env = module.config.config.env
+  }
 }
 
 module "sg" {
   source = "./modules/security_group"
 
-  org_name             = local.config.org_name
-  app_name             = local.config.app_name
-  service_name         = local.config.service_name
-  env                  = local.config.env
-  aws_vpc_id           = local.config.vpc_id
-  aws_sg_configuration = local.config.aws_sg_configuration
+  org_name             = module.config.config.org_name
+  app_name             = module.config.config.app_name
+  service_name         = module.config.config.service_name
+  env                  = module.config.config.env
+  aws_vpc_id           = module.config.config.vpc_id
+  aws_sg_configuration = module.config.config.aws_sg_configuration
 }
 
 module "config" {

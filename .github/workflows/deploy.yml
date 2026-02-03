@@ -38,15 +38,11 @@ jobs:
 
     - name: Terraform Init
       working-directory: terraform
- #     working-directory: ./
-#      run: terraform init
       run: terraform init -backend-config=../config_env/dev/backend.tfvars
-
 
     - name: Terraform Apply
       working-directory: terraform
-#      run: terraform apply -auto-approve
-      run: terraform apply -auto-approve -var-file=../config_env/dev/backend.tfvars
+      run: terraform apply -auto-approve
 
     # Login to Amazon ECR
 
