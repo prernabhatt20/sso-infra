@@ -22,7 +22,7 @@ module "task_definition" {
 }
 
 module "ecs_service" {
-  source = "../../modules/ecs-service"
+  source = "./modules/ecs-service"
 
   org_name            = local.config.org_name
   app_name            = local.config.app_name
