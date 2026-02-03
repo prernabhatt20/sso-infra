@@ -1,6 +1,6 @@
 # Configure AWS provider
 provider "aws" {
-  region = var.aws_region
+  region = local.config.aws.region
 }
 
 # Terraform required version
@@ -13,13 +13,7 @@ terraform {
       version = "~> 5.0"
     }
   }
-  backend "s3" {
-    bucket = "aws-s3-bucket-github"  
-    key    = "terraform.tfstate"
-    region = "us-east-1"
-    encrypt = true
+   backend "s3" {
+    
   }
-
 }
-
-

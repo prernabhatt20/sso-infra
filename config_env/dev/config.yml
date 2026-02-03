@@ -1,0 +1,35 @@
+org_name: acs
+app_name: sso
+service_name: ecs-service
+env: dev
+
+aws:
+  region: us-east-1
+  vpc_id: vpc-035d238901a99b5ad
+  subnet_ids:
+    - subnet-02305d18aeeedfe34
+    - subnet-0939dfe14a71ef899
+
+ecs:
+  desired_count: 1
+  container_port: 8080
+
+ecr:
+  repository_name: acs-sso-repo
+
+security_groups:
+  - name: ecs-service
+    aws_sg_ingress_rules:
+      - aws_sg_ingress_cidr_ipv4: ["0.0.0.0/0"]
+        aws_sg_inbound_port: [80]
+        aws_sg_protocal: ["tcp"]
+        aws_sg_enable_cidr_ipv4: true
+        aws_reference_sg: []
+        aws_reference_sg_id: []
+    aws_sg_egress_rules:
+      - aws_sg_egress_cidr_ipv4: ["0.0.0.0/0"]
+        aws_sg_inbound_port: [0]
+        aws_sg_protocal: ["-1"]
+        aws_sg_enable_cidr_ipv4: true
+        aws_reference_sg: []
+        aws_reference_sg_id: []
