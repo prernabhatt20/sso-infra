@@ -37,7 +37,8 @@ jobs:
       uses: hashicorp/setup-terraform@v2
 
     - name: Terraform Init
-      working-directory: terraform
+ #     working-directory: terraform
+      working-directory: ./
 #      run: terraform init
       run: terraform init -backend-config=config_env/dev/backend.tfvars
 
