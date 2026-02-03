@@ -22,7 +22,7 @@ module "task_definition" {
 }
 
 module "ecs_service" {
-  source = "./modules/ecs-service"
+  source = "./modules/ecs_service"
 
   org_name            = local.config.org_name
   app_name            = local.config.app_name
@@ -44,7 +44,7 @@ module "ecs_service" {
 }
 
 module "sg" {
-  source = "./modules/sg"
+  source = "./modules/security_group"
 
   org_name             = local.config.org_name
   app_name             = local.config.app_name
