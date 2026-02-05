@@ -29,13 +29,13 @@ module "ecs_service" {
   service_name        = module.config.configs.service_name
   env = module.config.environment
 
-  cluster_id          = module.ecs_cluster.id
+  cluster_id = module.ecs_cluster.cluster_id
   task_definition_arn = module.task_definition.task_definition_arn
 
   subnet_ids          = module.config.configs.network.private_subnets
   security_group_ids = [
-    module.sg.ecs_sg_ids["ecs-service"]
-  ]
+  module.sg.ecs_sg_ids["ecs-service"]
+]
 
   desired_count       = module.config.configs.ecs.desired_count
   assign_public_ip    = false
