@@ -1,7 +1,5 @@
 # Configure AWS provider
-provider "aws" {
-  region = module.config.configs.aws.region
-}
+provider "aws" {}
 
 # Terraform required version
 terraform {
