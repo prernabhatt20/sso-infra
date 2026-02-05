@@ -1,12 +1,13 @@
 # Config module (no SOPS, single YAML)
 locals {
   # Path to config folder
-  config_path = var.config_path != "" ? var.config_path : "${path.root}/config_env"
+#  config_path = var.config_path != "" ? var.config_path : "${path.root}/config_env"
+  config_path = var.config_path != "" ? var.config_path : "${path.root}/../config_env"
   environment = var.environment != "" ? var.environment : terraform.workspace
 
   # Load all YAML files (skip .enc.yaml)
   files_env = toset([
-    for f in fileset("${local.config_path}/${local.environment}", "*.yml") :
+    for f in fileset("${local.config_path}/${local.environment}", "*.yaml") :
     f if substr(f, -9, -1) != ".enc.yaml"
   ])
 
