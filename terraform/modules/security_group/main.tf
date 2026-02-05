@@ -31,7 +31,10 @@ locals {
 
 # Create ingress rules
 resource "aws_vpc_security_group_ingress_rule" "ingress" {
-  for_each                     = { for r in local.ingress_rules : "${r.sg_name}-${r.cidr_ipv4}-${r.ref_sg_name}-${r.port}" => r }
+  for_each = {
+    for r in local.ingress_rules :
+    "${r.sg_name}-${r.cidr_ipv4 != null ? r.cidr_ipv4 : "no-cidr"}-${r.ref_sg_name != null ? r.ref_sg_name : "no-ref-sg"}-${r.port}" => r
+  }
   security_group_id            = aws_security_group.sg[each.value.sg_name].id
   from_port                    = each.value.port
   to_port                      = each.value.port
@@ -60,7 +63,10 @@ locals {
 
 # Create egress rules
 resource "aws_vpc_security_group_egress_rule" "egress" {
-  for_each                     = { for r in local.egress_rules : "${r.sg_name}-${r.cidr_ipv4}-${r.ref_sg_name}-${r.port}" => r }
+  for_each = {
+    for r in local.egress_rules :
+    "${r.sg_name}-${r.cidr_ipv4 != null ? r.cidr_ipv4 : "no-cidr"}-${r.ref_sg_name != null ? r.ref_sg_name : "no-ref-sg"}-${r.port}" => r
+  }
   security_group_id            = aws_security_group.sg[each.value.sg_name].id
   from_port                    = each.value.port
   to_port                      = each.value.port
