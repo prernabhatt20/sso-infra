@@ -11,12 +11,21 @@ locals {
   ])
 
   # Decode YAML files
-  configs_env = toset([
-    for f in local.files_env :
-    try(yamldecode(file("${local.config_path}/${local.environment}/${f}")))
-  ])
+ # configs_env = toset([
+ #   for f in local.files_env :
+ #   try(yamldecode(file("${local.config_path}/${local.environment}/${f}")))
+ # ])
 
   # Merge all configs into one map
+ # configs = merge(local.configs_env...)
+
+
+#Decode YAML files
+  configs_env = [
+    for f in local.files_env :
+    yamldecode(file("${local.config_path}/${local.environment}/${f}"))
+  ]
+
   configs = merge(local.configs_env...)
   
   # Default tags (ACS-style)
