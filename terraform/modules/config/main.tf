@@ -6,7 +6,7 @@ locals {
 
   # Load all YAML files (skip .enc.yaml)
   files_env = toset([
-    for f in fileset("${local.config_path}/${local.environment}", "*.yaml") :
+    for f in fileset("${local.config_path}/${local.environment}", "*.yml") :
     f if substr(f, -9, -1) != ".enc.yaml"
   ])
 

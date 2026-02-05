@@ -1,3 +1,8 @@
+module "config" {
+  source      = "./modules/config"
+  #environment = "dev"
+}
+
 module "ecr" {
   source            = "./modules/ecr"
 #  repository_name   = "my-app"
@@ -59,7 +64,3 @@ module "sg" {
   aws_sg_configuration = module.config.configs.aws_sg_configuration
 }
 
-module "config" {
-  source      = "./modules/config"
-  #environment = "dev"
-}
