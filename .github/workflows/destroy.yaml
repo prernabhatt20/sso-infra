@@ -26,7 +26,7 @@ jobs:
 
       - name: Terraform Init
         working-directory: terraform
-        run: terraform init -backend-config=backend.tfvars
+        run: terraform init -backend-config=../config_env/dev/backend.tfvars
 
       - name: Terraform Destroy
         working-directory: terraform
