@@ -46,8 +46,10 @@ jobs:
 
     - name: Get Terraform ECR URI
       working-directory: terraform
+      env:
+        TF_LOG: ""
       run: |
-        ECR_URI=$(echo 'aws_ecr_repository.repository.repository_url' | terraform console -no-color  | tr -d '"[:space:]"')
+        ECR_URI=$(terraform output -raw repository_url | tr -d '[:space:]')
         echo "ECR_URI=$ECR_URI" >> $GITHUB_ENV
     
     - name: Verify ECR URI
