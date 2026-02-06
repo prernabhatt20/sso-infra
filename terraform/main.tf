@@ -44,7 +44,7 @@ module "ecs_service" {
 ]
 
   desired_count       = module.config.configs.ecs.desired_count
-  assign_public_ip    = false
+  assign_public_ip    = true
 
   default_tags = {
     org = module.config.configs.org_name
