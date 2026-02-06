@@ -47,7 +47,7 @@ jobs:
     - name: Get Terraform ECR URI
       working-directory: terraform
       run: |
-        ECR_URI=$(terraform output -raw repository_uri | tr -d '\n')
+        ECR_URI=$(terraform output -raw repository_url)
         echo "ECR_URI=$ECR_URI" >> $GITHUB_ENV
 
     # Login to Amazon ECR
