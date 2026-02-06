@@ -68,8 +68,8 @@ resource "aws_vpc_security_group_egress_rule" "egress" {
     "${r.sg_name}-${r.cidr_ipv4 != null ? r.cidr_ipv4 : "no-cidr"}-${r.ref_sg_name != null ? r.ref_sg_name : "no-ref-sg"}-${r.port}" => r
   }
   security_group_id            = aws_security_group.sg[each.value.sg_name].id
-  from_port                    = each.value.port
-  to_port                      = each.value.port
+  from_port = each.value.protocol == "-1" ? null : each.value.port
+  to_port   = each.value.protocol == "-1" ? null : each.value.port
   ip_protocol                  = each.value.protocol != "" ? each.value.protocol : "tcp"
   cidr_ipv4                    = each.value.cidr_ipv4
   referenced_security_group_id = each.value.ref_sg_name != null ? aws_security_group.sg[each.value.ref_sg_name].id : each.value.ref_sg_id
