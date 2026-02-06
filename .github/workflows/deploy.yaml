@@ -55,13 +55,19 @@ jobs:
     - name: Build and Push Docker Image
       run: |
         IMAGE_TAG=${GITHUB_SHA::7}
-        ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}
+        echo "Using ECR URI: $ECR_URI"
 
-        docker build -t $ECR_REPO:$IMAGE_TAG app/
+        # Build Docker image (local name doesn't matter much)
+        docker build -t my-app:$IMAGE_TAG app/
 
-        docker tag $ECR_REPO:$IMAGE_TAG $ECR_URI:$IMAGE_TAG
+        # Tag it with Terraform-provided ECR URI
+        docker tag my-app:$IMAGE_TAG $ECR_URI:$IMAGE_TAG
         docker push $ECR_URI:$IMAGE_TAG
 
+        # Also push as latest
         docker tag $ECR_URI:$IMAGE_TAG $ECR_URI:latest
         docker push $ECR_URI:latest
 
+
+
+        
