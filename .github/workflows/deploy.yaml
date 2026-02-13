@@ -2,10 +2,6 @@ name: Terraform + ECS Deployment
 
 on:
   workflow_dispatch: 
-#on:
-#  push:
-#    branches:
-#      - main
 
 env:
   AWS_REGION: us-east-1
