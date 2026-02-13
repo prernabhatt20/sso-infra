@@ -7,6 +7,9 @@ permissions:
   id-token: write
   contents: read 
 
+env:
+  AWS_REGION: us-east-1
+
 jobs:
   terraform-destroy:
     name: Terraform Destroy
@@ -26,7 +29,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::331005568591:role/test_role
-          aws-region: us-east-1
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
         working-directory: terraform
